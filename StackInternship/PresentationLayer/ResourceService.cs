@@ -12,11 +12,11 @@ namespace PresentationLayer
 {
     public class ResourceService
     {
+        public StackInternshipDbContext context;
         public ResourceService()
         {
             context = DbContextFactory.GetStackInternshipDbContext();
         }
-        private readonly StackInternshipDbContext context;
 
         static public void DepartmentMenu(User loggedInUser)
         {
@@ -63,23 +63,24 @@ namespace PresentationLayer
         public void ListResourcesOfADepartment(ResourceDepartment choice)
         {
             Console.Clear();
-            context.Resources
+            var govno = context.Users;
+            context.Entries
                 .OrderByDescending(c => c.DateOfPublishing)
                 .Where(c => c.Department == choice)
-                .Join(context.Users, r => r.AuthorId, u => u.Id, (resource, user) => new
+                .Join(govno, e => e.AuthorId, u => u.Id, (entry, user) => new
                 {
-                    Resource = resource,
+                    Entry = entry,
                     User = user
                 })
                 .ToList()
                 .ForEach(c => {
-                    Console.WriteLine($"Id: {c.Resource.Id}\n" +
-                        $"Kategorija: {c.Resource.Department}\n" +
+                    Console.WriteLine($"Id: {c.Entry.Id}\n" +
+                        $"Kategorija: {c.Entry.Department}\n" +
                         $"Autor: {c.User.UserName}\n" +
-                        $"Datum objave: {c.Resource.DateOfPublishing}\n" +
-                        $"Sadržaj: {c.Resource.Content}\n" +
-                        $"Upvoteovi: {c.Resource.UpvoteCount}\n" +
-                        $"Downvoteovi: {c.Resource.DownvoteCount}\n\n");
+                        $"Datum objave: {c.Entry.DateOfPublishing}\n" +
+                        $"Sadržaj: {c.Entry.Content}\n" +
+                        $"Upvoteovi: {c.Entry.UpvoteCount}\n" +
+                        $"Downvoteovi: {c.Entry.DownvoteCount}\n\n");
                 });
         }
 
@@ -158,19 +159,33 @@ namespace PresentationLayer
         public void VoteOnAResource(User loggedInUser, int resourceToInteractId, ResourceSubaction choice)
         {
             int authorId = 0;
-            foreach (var resource in context.Resources)
+            Entry chosenEntry = null;
+            foreach (var entry in context.Entries)
             {
-                if(resource.Id == resourceToInteractId)
+                if(entry.Id == resourceToInteractId)
                 {
                     if (choice == ResourceSubaction.Upvote)
-                        resource.UpvoteCount++;
+                        entry.UpvoteCount++;
                     else if (choice == ResourceSubaction.Downvote)
-                        resource.DownvoteCount++;
-
-                    authorId = resource.AuthorId;
+                        entry.DownvoteCount++;
+                    
+                    authorId = entry.AuthorId;
+                    chosenEntry = entry;
                     break;
                 }
             }
+            var alreadyVoted = context
+                 .UserEntries
+                 .Where(c => c.User.Id == loggedInUser.Id && c.Entry.Id == chosenEntry.Id)
+                 .All(c => c.Upvoted == true);
+
+            if(alreadyVoted)
+            {
+                Console.WriteLine("Već ste glasali za ovo!");
+                PopupService.ClickAnyKeyToContinue();
+                return;
+            }
+
             ChangeReputationPointsOnAccountOfAVote(authorId, loggedInUser.Id, choice);
             Console.WriteLine("Uspješno ste glasali.");
             PopupService.ClickAnyKeyToContinue();

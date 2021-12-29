@@ -114,13 +114,10 @@ namespace PresentationLayer
                 RegisterNewUser(name, password);
             }
 
-            else if (choice is LoginMenuChoice.Login)
-            {
-                UserService user = new();
-                loggedInUser = user.LoginIntoUserAccount(name, password);
-                Console.WriteLine($"\nPrijavljeni ste kao {loggedInUser.UserName}.");
-                PopupService.ContinueToDashboard();
-            }
+            UserService user = new();
+            loggedInUser = user.LoginIntoUserAccount(name, password);
+            Console.WriteLine($"\nPrijavljeni ste kao {loggedInUser.UserName}.");
+            PopupService.ContinueToDashboard();
 
             return loggedInUser;
         }

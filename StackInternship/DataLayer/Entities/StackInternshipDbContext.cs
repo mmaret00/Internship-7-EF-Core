@@ -14,14 +14,22 @@ namespace DataLayer.Entities
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Resource> Resources { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Entry> Entries { get; set; }
+        public DbSet<UserEntry> UserEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //ovdi se grade n-m veze izmedu tablica (vidit u duje)
-
-
+            modelBuilder
+                .Entity<UserEntry>()
+                .HasOne(ue => ue.User)
+                .WithMany(u => u.UserEntries)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder
+                .Entity<UserEntry>()
+                .HasOne(ue => ue.Entry)
+                .WithMany(e => e.UserEntries)
+                .OnDelete(DeleteBehavior.NoAction);
 
             DbSeeder.Execute(modelBuilder);
             base.OnModelCreating(modelBuilder);

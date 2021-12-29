@@ -15,11 +15,25 @@ namespace PresentationLayer
 {
     public class UserService
     {
+        public StackInternshipDbContext context;
         public UserService()
         {
             context = DbContextFactory.GetStackInternshipDbContext();
         }
-        private readonly StackInternshipDbContext context;
+
+        /*public void Obrisat()
+        {
+            foreach (var comment in context.Comments)
+            {
+                foreach (var entry in context.Entries)
+                {
+                    if (comment.ParentId == entry.Id)
+                    {
+                        entry.Comments.Add(comment);
+                    }
+                }
+            }
+        }*/
 
         public bool RegisterUser(string name, string password)
         {
