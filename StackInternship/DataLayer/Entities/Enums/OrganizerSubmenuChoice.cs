@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ResourceAction
+    public enum OrganizerSubmenuChoice
     {
-        Interaction = '1',
-        AddNew = '2',
-        Exit = '0'
+        Return = '0',
+        DeactivateTemporarily = '1',
+        DeactivatePermanently = '2',
+        Reactivate = '3'
     }
 }

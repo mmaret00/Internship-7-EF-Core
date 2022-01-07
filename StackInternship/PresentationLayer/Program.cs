@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PresentationLayer;
 
 namespace PresentationLayer
 {
@@ -11,11 +12,7 @@ namespace PresentationLayer
     {
         static void Main()
         {
-            while (true)
-            {
-                var correctEntry = OutputService.LoginMenu();
-                if (correctEntry) return;
-            }
+            MenuService.LoginMenu();
         }
     }
 }

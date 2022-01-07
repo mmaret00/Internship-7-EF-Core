@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ResourceAction
+    public enum InternSubmenuChoice
     {
-        Interaction = '1',
-        AddNew = '2',
-        Exit = '0'
+        Return = '0',
+        BecomeTrustedUser = '1',
+        BecomeOrganizer = '2'
     }
 }

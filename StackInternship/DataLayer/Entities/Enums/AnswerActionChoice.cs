@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ResourceSubaction
+    public enum AnswerActionChoice
     {
         Upvote = '1',
         Downvote = '2',
-        AddComment = '3',
-        ViewComments = '4',
-        Edit = '5',
-        Delete = '6',
-        Exit = '0'
+        CommentAnswer = '3',
+        Edit = '4',
+        Delete = '5',
+        Return = '0',
     }
 }

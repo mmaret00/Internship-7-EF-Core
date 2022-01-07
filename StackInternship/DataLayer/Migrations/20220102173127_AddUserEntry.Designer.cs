@@ -4,14 +4,16 @@ using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(StackInternshipDbContext))]
-    partial class StackInternshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220102173127_AddUserEntry")]
+    partial class AddUserEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,28 +28,23 @@ namespace DataLayer.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CommentCount")
+                    b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DateOfPublishing")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Department")
                         .HasColumnType("int");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("DownvoteCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PublishedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TypeOfEntry")
                         .HasColumnType("int");
 
                     b.Property<int>("UpvoteCount")
@@ -58,22 +55,19 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.ToTable("Entries");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Entry");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             AuthorId = 1,
-                            CommentCount = 1,
-                            Content = "Integer ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl.",
+                            Content = "Prva obavijest",
+                            DateOfPublishing = new DateTime(2021, 12, 1, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = 53,
                             DownvoteCount = 0,
-                            ParentId = 0,
-                            PublishedAt = new DateTime(2021, 12, 1, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 0,
                             UpvoteCount = 0,
                             ViewCount = 0
                         },
@@ -81,13 +75,10 @@ namespace DataLayer.Migrations
                         {
                             Id = 2,
                             AuthorId = 3,
-                            CommentCount = 0,
-                            Content = "Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat. Nulla nisl. Nunc nisl.",
+                            Content = "Kad je iduće predavanje?",
+                            DateOfPublishing = new DateTime(2021, 12, 1, 12, 12, 12, 0, DateTimeKind.Unspecified),
                             Department = 49,
                             DownvoteCount = 0,
-                            ParentId = 0,
-                            PublishedAt = new DateTime(2021, 12, 1, 12, 12, 12, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 0,
                             UpvoteCount = 0,
                             ViewCount = 0
                         },
@@ -95,13 +86,10 @@ namespace DataLayer.Migrations
                         {
                             Id = 3,
                             AuthorId = 2,
-                            CommentCount = 0,
-                            Content = "Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue. Vestibulum rutrum rutrum neque.",
+                            Content = "Zašto mi se ne ispiše ništa kad stavim where?",
+                            DateOfPublishing = new DateTime(2021, 12, 25, 14, 30, 0, 0, DateTimeKind.Unspecified),
                             Department = 50,
                             DownvoteCount = 0,
-                            ParentId = 0,
-                            PublishedAt = new DateTime(2021, 12, 25, 14, 30, 0, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 0,
                             UpvoteCount = 0,
                             ViewCount = 0
                         },
@@ -109,13 +97,10 @@ namespace DataLayer.Migrations
                         {
                             Id = 4,
                             AuthorId = 3,
-                            CommentCount = 0,
-                            Content = "Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus. Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero. Nullam sit amet turpis elementum ligula vehicula consequat.",
+                            Content = "Upute za LINQ!",
+                            DateOfPublishing = new DateTime(2021, 12, 1, 0, 30, 0, 0, DateTimeKind.Unspecified),
                             Department = 49,
                             DownvoteCount = 0,
-                            ParentId = 0,
-                            PublishedAt = new DateTime(2021, 12, 1, 0, 30, 0, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 0,
                             UpvoteCount = 0,
                             ViewCount = 0
                         },
@@ -123,41 +108,10 @@ namespace DataLayer.Migrations
                         {
                             Id = 5,
                             AuthorId = 3,
-                            CommentCount = 0,
-                            Content = "Aenean auctor gravida sem. Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim.",
+                            Content = "Uskršnji party je u učionici na Veliki petak u 19h, nemojte kasnit!",
+                            DateOfPublishing = new DateTime(2021, 12, 1, 23, 59, 59, 0, DateTimeKind.Unspecified),
                             Department = 53,
                             DownvoteCount = 0,
-                            ParentId = 0,
-                            PublishedAt = new DateTime(2021, 12, 1, 23, 59, 59, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 0,
-                            UpvoteCount = 0,
-                            ViewCount = 0
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AuthorId = 3,
-                            CommentCount = 1,
-                            Content = "Quisque erat eros, viverra eget.",
-                            Department = 53,
-                            DownvoteCount = 0,
-                            ParentId = 1,
-                            PublishedAt = new DateTime(2022, 1, 1, 12, 13, 14, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 1,
-                            UpvoteCount = 0,
-                            ViewCount = 0
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AuthorId = 4,
-                            CommentCount = 0,
-                            Content = "Maecenas ut massa quis augue luctus tincidunt.",
-                            Department = 53,
-                            DownvoteCount = 0,
-                            ParentId = 6,
-                            PublishedAt = new DateTime(2022, 1, 3, 12, 13, 14, 0, DateTimeKind.Unspecified),
-                            TypeOfEntry = 2,
                             UpvoteCount = 0,
                             ViewCount = 0
                         });
@@ -212,7 +166,7 @@ namespace DataLayer.Migrations
                             IsTrustedUser = true,
                             Password = "54321",
                             PermanentDeactivation = false,
-                            ReputationPoints = 444444,
+                            ReputationPoints = 44444,
                             Role = 1,
                             UserName = "lovre"
                         },
@@ -232,7 +186,7 @@ namespace DataLayer.Migrations
                             IsTrustedUser = false,
                             Password = "qwqwq",
                             PermanentDeactivation = false,
-                            ReputationPoints = 990,
+                            ReputationPoints = 1000,
                             Role = 0,
                             UserName = "mmaretic"
                         },
@@ -244,7 +198,7 @@ namespace DataLayer.Migrations
                             PermanentDeactivation = false,
                             ReputationPoints = 1,
                             Role = 0,
-                            UserName = "Anamarija"
+                            UserName = "anamarija"
                         },
                         new
                         {
@@ -254,7 +208,7 @@ namespace DataLayer.Migrations
                             PermanentDeactivation = false,
                             ReputationPoints = 1,
                             Role = 0,
-                            UserName = "Boze Topic"
+                            UserName = "boze topic"
                         },
                         new
                         {
@@ -262,7 +216,7 @@ namespace DataLayer.Migrations
                             IsTrustedUser = true,
                             Password = "asdas",
                             PermanentDeactivation = false,
-                            ReputationPoints = 200000,
+                            ReputationPoints = 10000,
                             Role = 1,
                             UserName = "petra123"
                         });
@@ -296,14 +250,28 @@ namespace DataLayer.Migrations
                     b.ToTable("UserEntries");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Models.Entry", b =>
+            modelBuilder.Entity("DataLayer.Entities.Models.Comment", b =>
                 {
-                    b.HasOne("DataLayer.Entities.Models.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.HasBaseType("DataLayer.Entities.Models.Entry");
 
-                    b.Navigation("Author");
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("Comment");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            AuthorId = 2,
+                            Content = "ok",
+                            DateOfPublishing = new DateTime(2021, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Department = 0,
+                            DownvoteCount = 0,
+                            UpvoteCount = 0,
+                            ViewCount = 0,
+                            ParentId = 1
+                        });
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Models.UserEntry", b =>
@@ -311,13 +279,13 @@ namespace DataLayer.Migrations
                     b.HasOne("DataLayer.Entities.Models.Entry", "Entry")
                         .WithMany()
                         .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataLayer.Entities.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Entry");

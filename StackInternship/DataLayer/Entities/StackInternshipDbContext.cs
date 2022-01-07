@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.IO;
 using System.Linq;
 
@@ -14,22 +15,15 @@ namespace DataLayer.Entities
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Comment> Comments { get; set; }
         public DbSet<Entry> Entries { get; set; }
         public DbSet<UserEntry> UserEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
-                .Entity<UserEntry>()
-                .HasOne(ue => ue.User)
-                .WithMany(u => u.UserEntries)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder
-                .Entity<UserEntry>()
-                .HasOne(ue => ue.Entry)
-                .WithMany(e => e.UserEntries)
-                .OnDelete(DeleteBehavior.NoAction);
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.NoAction;
+            }
 
             DbSeeder.Execute(modelBuilder);
             base.OnModelCreating(modelBuilder);

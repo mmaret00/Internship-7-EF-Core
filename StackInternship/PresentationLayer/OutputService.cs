@@ -33,7 +33,9 @@ namespace PresentationLayer
                         return true;
                     default:
                         Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Molimo unesite jedan od dopuštenih brojeva (0 - 2)\n");
+                        Console.ResetColor();
                         break;
                 }
             }
@@ -62,7 +64,7 @@ namespace PresentationLayer
 
                 if (ValidityOfString.GiveUp == validity)
                 {
-                    PopupService.GiveUpOnLogin();
+                    PopupService.GiveUp();
                     return null;
                 }
 
@@ -81,13 +83,13 @@ namespace PresentationLayer
                     Console.Write("Unesite korisničko ime: ");
                     break;
                 case InputString.NewPassword:
-                    Console.Write("Unesite lozinku: ");
+                    Console.Write("\nUnesite lozinku: ");
                     break;
                 case InputString.ChangeUserName:
                     Console.Write("Unesite novo korisničko ime: ");
                     break;
                 case InputString.ChangePassword:
-                    Console.Write("Unesite novu lozinku: ");
+                    Console.Write("\nUnesite novu lozinku: ");
                     break;
             }
         }
@@ -111,22 +113,56 @@ namespace PresentationLayer
 
             if (choice is LoginMenuChoice.Register)
             {
-                RegisterNewUser(name, password);
+                var success = RegisterNewUser(name, password);
+                if (!success)
+                {
+                    return null;
+                }
             }
 
             UserService user = new();
             loggedInUser = user.LoginIntoUserAccount(name, password);
+            Console.ForegroundColor = ConsoleColor.Red;
+            if (loggedInUser is null)
+            {
+                Console.WriteLine("Unijeli ste netočne podatke.");
+                Console.ResetColor();
+                PopupService.ReturnToLoginMenu();
+                return null;
+            }
+            if (loggedInUser.PermanentDeactivation is true)
+            {
+                Console.WriteLine("Profil vam je trajno deaktiviran.");
+                Console.ResetColor();
+                PopupService.ReturnToLoginMenu();
+                return null;
+            }
+            if (loggedInUser.DeactivatedUntil > DateTime.Now)
+            {
+                Console.WriteLine($"Profil vam je deaktiviran do {loggedInUser.DeactivatedUntil}.");
+                Console.ResetColor();
+                PopupService.ReturnToLoginMenu();
+                return null;
+            }
+            loggedInUser.DeactivatedUntil = null;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\nPrijavljeni ste kao {loggedInUser.UserName}.");
+            Console.ResetColor();
             PopupService.ContinueToDashboard();
 
             return loggedInUser;
         }
 
-        static void RegisterNewUser(string name, string password)
+        static bool RegisterNewUser(string name, string password)
         {
             UserService user = new();
-            user.RegisterUser(name, password);
+            var success = user.RegisterUser(name, password);
+            if (!success)
+            {
+                return false;
+            }
             PopupService.AfterRegistration();
+            return true;
         }
 
         static void DashboardMenu(User loggedInUser)
@@ -138,21 +174,24 @@ namespace PresentationLayer
                 switch (choice)
                 {
                     case DashboardMenuChoice.Users:
-                        PrintAllUsers();
+                        Console.Clear();
+                        PrintingUsersService.PrintMenu();
                         break;
                     case DashboardMenuChoice.MyProfile:
-                        ShowUsersProfile(loggedInUser);
+                        loggedInUser = ShowUsersProfile(loggedInUser);
                         break;
                     case DashboardMenuChoice.Resources:
                         PopupService.ContinueToDepartments();
-                        ResourceService.DepartmentMenu(loggedInUser);
+                        loggedInUser = ResourceService.DepartmentMenu(loggedInUser);
                         break;
                     case DashboardMenuChoice.Exit:
                         PopupService.ReturnToLoginMenu();
                         return;
                     default:
                         Console.Clear();
-                        Console.WriteLine("Molimo unesite jedan od dopuštenih brojeva (0 - 4)\n");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Molimo unesite jedan od dopuštenih brojeva (0 - 5)\n");
+                        Console.ResetColor();
                         break;
                 }
             }
@@ -173,18 +212,10 @@ namespace PresentationLayer
             return choice;
         }
 
-        static public void PrintAllUsers()
-        {
-            Console.WriteLine("Svi korisnici:");
-            UserService user = new();
-            user.PrintUsers();
-            PopupService.ReturnToDashboard();
-        }
-
-        static public void ShowUsersProfile(User loggedInUser)
+        static public User ShowUsersProfile(User loggedInUser)
         {
             UserService user = new();
-            user.ChangeUsersDataMenu(loggedInUser);
+            return user.ChangeUsersDataMenu(loggedInUser);
         }
     }
 }

@@ -9,14 +9,19 @@ namespace DataLayer.Entities.Models
     public class UserEntry
     {
         public int Id { get; set; }
-
-        public int UserId { get; set; }
         public User User { get; set; }
-
-        public int EntryId { get; set; }
+        public int UserId { get; set; }
         public Entry Entry { get; set; }
+        public int EntryId { get; set; }
 
         public bool Viewed { get; set; }
-        public bool Upvoted { get; set; }
+        public bool Voted { get; set; }
+
+        public UserEntry(int userId, int entryId)
+        {
+            UserId = userId;
+            EntryId = entryId;
+            Viewed = true;
+        }
     }
 }

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ResourceAction
+    public enum ListResourcesType
     {
-        Interaction = '1',
-        AddNew = '2',
-        Exit = '0'
+        Regular,
+        Unanswered
     }
 }

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ChangeUsersDataChoice
+    public enum EntryDepartmentChoice
     {
         Exit = '0',
-        ChangeName = '1',
-        ChangePassword = '2',
+        Development = '1',
+        Design = '2',
+        Marketing = '3',
+        Multimedia = '4',
+        General = '5'
     }
 }

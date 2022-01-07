@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ResourceAction
+    public enum InputStringType
     {
-        Interaction = '1',
-        AddNew = '2',
-        Exit = '0'
+        NewUserName,
+        NewPassword,
+        ChangeUserName,
+        ChangePassword
     }
 }

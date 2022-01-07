@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities.Enums
 {
-    public enum ResourceAction
+    public enum ValidityOfStringType
     {
-        Interaction = '1',
-        AddNew = '2',
-        Exit = '0'
+        Unvalid = 0,
+        Valid = 1,
+        GiveUp = 2
     }
+
 }

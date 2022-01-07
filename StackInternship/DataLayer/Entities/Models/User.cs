@@ -16,21 +16,14 @@ namespace DataLayer.Entities.Models
         public int ReputationPoints { get; set; }
         public UserRole Role { get; set; }
         public bool IsTrustedUser { get; set; }
-        public ICollection<UserEntry> UserEntries { get; set; }
-
+        public DateTime? DeactivatedUntil { get; set; }
+        public bool PermanentDeactivation { get; set; }
 
         public User(string name, string password) {
 
             UserName = name;
             Password = password;
             ReputationPoints = 1;
-        }
-
-        public User(string name, int reputationPoints)
-        {
-
-            UserName = name;
-            ReputationPoints = reputationPoints;
         }
 
         public User() { }

@@ -13,6 +13,7 @@ namespace DataLayer.Entities.Enums
         Popular = '3',
         Users = '4',
         MyProfile = '5',
+        Deactivation = '6',
         Exit = '0'
     }
 }
