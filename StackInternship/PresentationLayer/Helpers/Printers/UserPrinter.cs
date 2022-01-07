@@ -72,7 +72,7 @@ namespace PresentationLayer
             }
             if (numberOfUsersPrinted is 0)
             {
-                StringHelper.OutputPainter("\nLista je prazna!", ConsoleColor.Red, ConsoleColor.Black);
+                StringHelper.OutputPainter("Lista je prazna!", ConsoleColor.Red, ConsoleColor.Black);
             }
             PopupPrinter.ReturnToPrintMenu();
         }

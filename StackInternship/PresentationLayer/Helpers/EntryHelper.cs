@@ -138,7 +138,7 @@ namespace PresentationLayer
             var success = chosenEntry.CommentCount is not 0;
             if (!success)
             {
-                StringHelper.OutputPainter("Resurs nema komentara!", ConsoleColor.Red, ConsoleColor.Black);
+                StringHelper.OutputPainter("Odgovor nema komentara!", ConsoleColor.Red, ConsoleColor.Black);
                 PopupPrinter.ReturnToResources();
             }
             return success;

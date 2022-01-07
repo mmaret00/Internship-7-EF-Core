@@ -211,6 +211,7 @@ namespace PresentationLayer
                     case EntryActionChoice.ViewComments:
                         if (listResourcesType is ListResourcesType.Unanswered || chosenEntry is null)
                         {
+                            Console.Clear();
                             break;
                         }
                         if (EntryHelper.CheckIfAnswerHasComments(chosenEntry))

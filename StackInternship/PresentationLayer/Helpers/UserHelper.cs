@@ -14,7 +14,7 @@ namespace PresentationLayer
     {
         public static int InsertedNumberOfReputationPointsCheck()
         {
-            Console.WriteLine("Molimo unesite željeni broj bodova.");
+            Console.WriteLine("Molimo unesite željeni broj bodova:");
             var success = int.TryParse(Console.ReadLine().Trim(), out int choice);
             if (success)
             {
@@ -48,7 +48,7 @@ namespace PresentationLayer
         {
             if (newPassword is null || !PasswordValidation(loggedInUser))
             {
-                PopupPrinter.GiveUp();
+                Console.Clear();
                 return UserChangeResult.GiveUp;
             }
             Console.WriteLine($"Jeste li sigurni da želite promijeniti lozinku iz {loggedInUser.Password} u {newPassword}?");

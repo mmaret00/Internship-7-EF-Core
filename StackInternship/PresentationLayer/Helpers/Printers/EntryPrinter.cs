@@ -67,10 +67,10 @@ namespace PresentationLayer
             Console.ResetColor();
             if (entryType is EntryType.Answer)
             {
-                Console.WriteLine($" , {entryDetails.CommentCount} komentara");
+                Console.WriteLine($" , {entryDetails.CommentCount} komentara\n");
                 return;
             }
-            Console.WriteLine("");
+            Console.WriteLine("\n");
         }
     }
 }
