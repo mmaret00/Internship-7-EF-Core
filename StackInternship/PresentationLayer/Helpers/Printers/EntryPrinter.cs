@@ -27,6 +27,7 @@ namespace PresentationLayer
             }
             Console.WriteLine($"Objavljeno: {entryDetails.Published}");
             StringHelper.OutputPainter($"{entryDetails.Content}", ConsoleColor.Black, ConsoleColor.Gray);
+            Console.ResetColor();
             Console.Write($"{entryDetails.ViewCount} pregleda, glasovi: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"{(char)24}:{entryDetails.UpvoteCount} ");
@@ -55,6 +56,7 @@ namespace PresentationLayer
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Write($"{entryDetails.Content}");
+            Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Write($"\n\t{entryDetails.ViewCount} pregleda, ");

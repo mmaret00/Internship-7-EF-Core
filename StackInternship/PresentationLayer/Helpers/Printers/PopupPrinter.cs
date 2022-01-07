@@ -111,6 +111,12 @@ namespace PresentationLayer
             ClickAnyKeyToReturn();
         }
 
+        public static void GiveUpOnChoosing()
+        {
+            StringHelper.OutputPainter("Odustali ste.", ConsoleColor.Red, ConsoleColor.Black);
+            ReadKeyAndClear();
+        }
+
 
         public static void ReturnToLoginMenu()
         {

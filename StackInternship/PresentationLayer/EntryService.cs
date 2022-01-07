@@ -86,10 +86,6 @@ namespace PresentationLayer
                 StringHelper.OutputPainter("Molimo unesite cijeli broj!", ConsoleColor.Red, ConsoleColor.Black);
                 entryToInteractId = ChooseEntryTointeractWith();
             }
-            if (entryToInteractId is 0)
-            {
-                return 0;
-            }
             return entryToInteractId;
         }
 
@@ -98,6 +94,7 @@ namespace PresentationLayer
             var entryToInteractId = ChooseEntryTointeractWith();
             if (entryToInteractId is 0)
             {
+                Console.Clear();
                 return null;
             }
             EntryRepository er = new();
@@ -129,6 +126,7 @@ namespace PresentationLayer
             var entryToInteractId = ChooseEntryTointeractWith();
             if (entryToInteractId is 0)
             {
+                Console.Clear();
                 return null;
             }
             if (answer.Id == entryToInteractId)
@@ -156,6 +154,7 @@ namespace PresentationLayer
             var content = Console.ReadLine().Trim();
             if (content.Length is 0)
             {
+                PopupPrinter.GiveUpOnChoosing();
                 return null;
             }
             if (content.Length < 10)
@@ -219,38 +218,35 @@ namespace PresentationLayer
 
         public static Entry GetAccessibleEntryForResourceActionsMenu(EntryActionChoice choice, EntryDepartmentChoice departmentChoice, ListResourcesType listResourcesType)
         {
-            Entry chosenEntry = null;
-
             if (choice is EntryActionChoice.Upvote || choice is EntryActionChoice.Downvote || choice is EntryActionChoice.Edit
                 || choice is EntryActionChoice.Delete || choice is EntryActionChoice.AnswerResource)
             {
-                chosenEntry = GetEntryAvailableForInteraction(departmentChoice, EntryType.Resource, listResourcesType);
+                return GetEntryAvailableForInteraction(departmentChoice, EntryType.Resource, listResourcesType);
             }
             if (choice is EntryActionChoice.ViewComments && listResourcesType is ListResourcesType.Regular)
             {
-                chosenEntry = GetEntryAvailableForInteraction(departmentChoice, EntryType.Answer, listResourcesType);
+                return GetEntryAvailableForInteraction(departmentChoice, EntryType.Answer, listResourcesType);
             }
-            if (chosenEntry is null && choice is not EntryActionChoice.AddNewResource)
+            if (choice is EntryActionChoice.AddNewResource)
             {
-                return chosenEntry;
+                return new Entry();
             }
-            return chosenEntry;
+            return null;
         }
 
         public static Entry GetAccessibleEntryForAnswerActionsMenu(AnswerActionChoice choice, Entry answer)
         {
-            Entry chosenEntry = null;
 
             if (choice is AnswerActionChoice.Upvote || choice is AnswerActionChoice.Downvote
                 || choice is AnswerActionChoice.Edit || choice is AnswerActionChoice.Delete)
             {
-                chosenEntry = GetAnswerAndCommentsAvailableForInteraction(answer);
+                return GetAnswerAndCommentsAvailableForInteraction(answer);
             }
-            if (chosenEntry is null && choice is not AnswerActionChoice.CommentAnswer)
+            if (choice is AnswerActionChoice.CommentAnswer)
             {
-                Console.Clear();
+                return new Entry();
             }
-            return chosenEntry;
+            return null;
         }
     }
 }

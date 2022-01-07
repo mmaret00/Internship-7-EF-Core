@@ -190,13 +190,15 @@ namespace PresentationLayer
 
                 var choice = (EntryActionChoice)MenuOutputPrinter.EntryActionsMenuOutput(listResourcesType);
                 var chosenEntry = EntryService.GetAccessibleEntryForResourceActionsMenu(choice, departmentChoice, listResourcesType);
-                if (chosenEntry is null)
+                if ((choice is EntryActionChoice.Upvote || choice is EntryActionChoice.Downvote || choice is EntryActionChoice.Edit
+                || choice is EntryActionChoice.Delete || choice is EntryActionChoice.AnswerResource) && chosenEntry is null)
                 {
-                    return;
+                    PopupPrinter.GiveUpOnChoosing();
+                    continue;
                 }
 
-                switch (choice)
-                {
+                    switch (choice)
+                    {
                     case EntryActionChoice.Upvote:
                     case EntryActionChoice.Downvote:
                         EntryVotingRepository evr = new();
@@ -210,9 +212,8 @@ namespace PresentationLayer
                         EntryService.AddComment(loggedInUser, chosenEntry);
                         break;
                     case EntryActionChoice.ViewComments:
-                        if (listResourcesType is ListResourcesType.Unanswered)
+                        if (listResourcesType is ListResourcesType.Unanswered || chosenEntry is null)
                         {
-                            PopupPrinter.UnallowedEntry(6);
                             break;
                         }
                         if (EntryHelper.CheckIfAnswerHasComments(chosenEntry))
@@ -227,6 +228,7 @@ namespace PresentationLayer
                         EntryService.DeleteEntry(loggedInUser, chosenEntry);
                         break;
                     case EntryActionChoice.Return:
+                        Console.Clear();
                         return;
                     default:
                         if (listResourcesType is ListResourcesType.Regular)
@@ -250,9 +252,11 @@ namespace PresentationLayer
                 EntryService.AnswerActionsMenuHeader(loggedInUser, answer);
                 var choice = (AnswerActionChoice)MenuOutputPrinter.AnswerActionsMenuOutput();
                 var chosenEntry = EntryService.GetAccessibleEntryForAnswerActionsMenu(choice, answer);
-                if (chosenEntry is null)
+                if ((choice is AnswerActionChoice.Upvote || choice is AnswerActionChoice.Downvote || choice is AnswerActionChoice.Edit
+                || choice is AnswerActionChoice.Delete || choice is AnswerActionChoice.CommentAnswer) && chosenEntry is null)
                 {
-                    return;
+                    PopupPrinter.GiveUpOnChoosing();
+                    continue;
                 }
 
                 switch (choice)
