@@ -190,6 +190,10 @@ namespace PresentationLayer
 
                 var choice = (EntryActionChoice)MenuOutputPrinter.EntryActionsMenuOutput(listResourcesType);
                 var chosenEntry = EntryService.GetAccessibleEntryForResourceActionsMenu(choice, departmentChoice, listResourcesType);
+                if (chosenEntry is null)
+                {
+                    return;
+                }
 
                 switch (choice)
                 {
@@ -246,6 +250,10 @@ namespace PresentationLayer
                 EntryService.AnswerActionsMenuHeader(loggedInUser, answer);
                 var choice = (AnswerActionChoice)MenuOutputPrinter.AnswerActionsMenuOutput();
                 var chosenEntry = EntryService.GetAccessibleEntryForAnswerActionsMenu(choice, answer);
+                if (chosenEntry is null)
+                {
+                    return;
+                }
 
                 switch (choice)
                 {

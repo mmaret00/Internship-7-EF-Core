@@ -88,7 +88,6 @@ namespace PresentationLayer
             }
             if (entryToInteractId is 0)
             {
-                PopupPrinter.GiveUp();
                 return 0;
             }
             return entryToInteractId;
@@ -120,7 +119,7 @@ namespace PresentationLayer
             if (chosenEntry is null)
             {
                 StringHelper.OutputPainter("Unijeli ste ID koji ne postoji u ovom ispisu! Molimo ponovite unos.", ConsoleColor.Red, ConsoleColor.Black);
-                chosenEntry = GetEntryAvailableForInteraction(departmentChoice, entryType, listResourcesType);
+                return GetEntryAvailableForInteraction(departmentChoice, entryType, listResourcesType);
             }
             return chosenEntry;
         }
@@ -145,7 +144,7 @@ namespace PresentationLayer
             if (chosenEntry is null)
             {
                 StringHelper.OutputPainter("Unijeli ste ID koji ne postoji u ovom ispisu! Molimo ponovite unos.", ConsoleColor.Red, ConsoleColor.Black);
-                chosenEntry = GetAnswerAndCommentsAvailableForInteraction(answer);
+                return GetAnswerAndCommentsAvailableForInteraction(answer);
             }
             return chosenEntry;
         }
@@ -157,14 +156,13 @@ namespace PresentationLayer
             var content = Console.ReadLine().Trim();
             if (content.Length is 0)
             {
-                PopupPrinter.GiveUp();
                 return null;
             }
             if (content.Length < 10)
             {
                 StringHelper.OutputPainter("Sadržaj ne smije biti kraći od 10 znakova! " +
                     "Molimo ponovite unos.", ConsoleColor.Red, ConsoleColor.Black);
-                content = EnterContent();
+                return EnterContent();
             }
             return content;
         }

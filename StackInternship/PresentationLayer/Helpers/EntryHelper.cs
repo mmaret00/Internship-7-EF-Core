@@ -106,6 +106,10 @@ namespace PresentationLayer
 
         public static bool DeletingEntryCheck(User loggedInUser, Entry chosenEntry)
         {
+            if (chosenEntry is null)
+            {
+                return false;
+            }
             if (!DeletingPrivilegeCheck(loggedInUser, chosenEntry))
             {
                 PopupPrinter.ReturnToResources();
