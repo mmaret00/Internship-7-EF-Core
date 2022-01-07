@@ -9,6 +9,7 @@ namespace DataLayer.Entities.Enums
     public enum ListResourcesType
     {
         Regular,
-        Unanswered
+        Unanswered,
+        Popular
     }
 }

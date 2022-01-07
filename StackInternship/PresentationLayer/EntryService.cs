@@ -18,9 +18,14 @@ namespace PresentationLayer
         {
             EntryRepository er = new();
             var entryDetails = er.GetEntryDetailsList(departmentChoice, loggedInUser, EntryType.Resource, 0);
+            if (listResourcesType is ListResourcesType.Popular)
+            {
+                Console.WriteLine("Najpopularniji današnji resursi:\n");
+                entryDetails = GetTodaysFiveMostCommentedResources(entryDetails);
+            }
             if (entryDetails is null)
             {
-                StringHelper.OutputPainter($"Željena kategorija je prazna!", ConsoleColor.Red, ConsoleColor.Black);
+                StringHelper.OutputPainter($"Željena kategorija je prazna!\n", ConsoleColor.Red, ConsoleColor.Black);
                 return;
             }
             foreach (var entryDetail in entryDetails)
@@ -28,7 +33,14 @@ namespace PresentationLayer
                 if (listResourcesType is ListResourcesType.Unanswered
                     && entryDetail.CommentCount is not 0) continue;
                 EntryPrinter.PrintPrimaryEntry(entryDetail);
-                GetAnswers(loggedInUser, departmentChoice, entryDetail);
+                if (listResourcesType is ListResourcesType.Regular )
+                {
+                    GetAnswers(loggedInUser, departmentChoice, entryDetail);
+                }
+                if (listResourcesType is ListResourcesType.Popular)
+                {
+                    GetAnswers(loggedInUser, entryDetail.Department, entryDetail);
+                }
                 Console.WriteLine("\n======================================================================================\n\n");
             }
         }
@@ -51,7 +63,7 @@ namespace PresentationLayer
             EntryRepository er = new();
             if (entryDetail.CommentCount != 0)
             {
-                StringHelper.OutputPainter("\tKomentari:\n", ConsoleColor.DarkGray, ConsoleColor.Black);
+                StringHelper.OutputPainter("\tOdgovori:\n", ConsoleColor.DarkGray, ConsoleColor.Black);
             }
             foreach (var comment in er.GetEntryDetailsList(departmentChoice, loggedInUser, EntryType.Answer, entryDetail.Id))
             {
@@ -116,6 +128,29 @@ namespace PresentationLayer
             {
                 StringHelper.OutputPainter("Unijeli ste ID koji ne postoji u ovom ispisu! Molimo ponovite unos.", ConsoleColor.Red, ConsoleColor.Black);
                 return GetEntryAvailableForInteraction(departmentChoice, entryType, listResourcesType);
+            }
+            return chosenEntry;
+        }
+
+        public static Entry GetPopularEntryAvailableForInteraction(EntryType entryType)
+        {
+            var entryToInteractId = ChooseEntryTointeractWith();
+            if (entryToInteractId is 0)
+            {
+                Console.Clear();
+                return null;
+            }
+            EntryRepository er = new();
+            List<Entry> availableEntries = new();
+            availableEntries = er.GetPopularEntries(entryType);
+
+            var chosenEntry = availableEntries
+                .FirstOrDefault(e => e.Id == entryToInteractId);
+
+            if (chosenEntry is null)
+            {
+                StringHelper.OutputPainter("Unijeli ste ID koji ne postoji u ovom ispisu! Molimo ponovite unos.", ConsoleColor.Red, ConsoleColor.Black);
+                return GetPopularEntryAvailableForInteraction(entryType);
             }
             return chosenEntry;
         }
@@ -217,6 +252,10 @@ namespace PresentationLayer
 
         public static Entry GetAccessibleEntryForResourceActionsMenu(EntryActionChoice choice, EntryDepartmentChoice departmentChoice, ListResourcesType listResourcesType)
         {
+            if (listResourcesType is ListResourcesType.Popular)
+            {
+                return GetAccessibleEntryForPopularResourceActionsMenu(choice);
+            }
             if (choice is EntryActionChoice.Upvote || choice is EntryActionChoice.Downvote || choice is EntryActionChoice.Edit
                 || choice is EntryActionChoice.Delete || choice is EntryActionChoice.AnswerResource)
             {
@@ -225,6 +264,24 @@ namespace PresentationLayer
             if (choice is EntryActionChoice.ViewComments && listResourcesType is ListResourcesType.Regular)
             {
                 return GetEntryAvailableForInteraction(departmentChoice, EntryType.Answer, listResourcesType);
+            }
+            if (choice is EntryActionChoice.AddNewResource)
+            {
+                return new Entry();
+            }
+            return null;
+        }
+
+        public static Entry GetAccessibleEntryForPopularResourceActionsMenu(EntryActionChoice choice)
+        {
+            if (choice is EntryActionChoice.Upvote || choice is EntryActionChoice.Downvote || choice is EntryActionChoice.Edit
+                || choice is EntryActionChoice.Delete || choice is EntryActionChoice.AnswerResource)
+            {
+                return GetPopularEntryAvailableForInteraction(EntryType.Resource);
+            }
+            if (choice is EntryActionChoice.ViewComments)
+            {
+                return GetPopularEntryAvailableForInteraction(EntryType.Answer);
             }
             if (choice is EntryActionChoice.AddNewResource)
             {
@@ -246,6 +303,16 @@ namespace PresentationLayer
                 return new Entry();
             }
             return null;
+        }
+
+        public static List<EntryDetails> GetTodaysFiveMostCommentedResources(List<EntryDetails> entryDetails)
+        {
+            return entryDetails
+                    .Where(ed => ed.TypeOfEntry == EntryType.Resource)
+                    .Where(ed => ed.Published.Date == DateTime.Now.Date)
+                    .OrderByDescending(ed => ed.CommentCount)
+                    .Take(5)
+                    .ToList();
         }
     }
 }

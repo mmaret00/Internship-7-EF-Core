@@ -106,7 +106,7 @@ namespace PresentationLayer
                         DepartmentMenu(loggedInUser, ListResourcesType.Unanswered);
                         break;
                     case DashboardMenuChoice.Popular:
-                        EntryHelper.FindPopularEntries(loggedInUser);
+                        ResourceActionsMenu(loggedInUser, EntryDepartmentChoice.General, ListResourcesType.Popular);
                         break;
                     case DashboardMenuChoice.Users:
                         Console.Clear();
@@ -152,6 +152,7 @@ namespace PresentationLayer
                 }
             }
         }
+
         public static void DepartmentMenu(User loggedInUser, ListResourcesType listResourcesType)
         {
             while (true)
@@ -229,7 +230,7 @@ namespace PresentationLayer
                         Console.Clear();
                         return;
                     default:
-                        if (listResourcesType is ListResourcesType.Regular)
+                        if (listResourcesType is not ListResourcesType.Unanswered)
                         {
                             PopupPrinter.UnallowedEntry(7);
                         }

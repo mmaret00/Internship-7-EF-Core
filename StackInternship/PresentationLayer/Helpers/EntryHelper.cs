@@ -38,24 +38,6 @@ namespace PresentationLayer
             }
         }
 
-        public static void FindPopularEntries(User loggedInUser)
-        {
-            Console.Clear();
-            EntryRepository er = new();
-            if (!er.CheckIfAnyResourcesWereMadeToday())
-            {
-                PopupPrinter.NoEntriesMadeToday();
-                return;
-            }
-            var popularEntries = er.GetPopularEntries(loggedInUser);
-            Console.WriteLine("Najpopularniji današnji resursi:\n");
-            foreach (var entry in popularEntries)
-            {
-                EntryPrinter.PrintPrimaryEntry(entry);
-            }
-            PopupPrinter.ReturnToDashboard();
-        }
-
         public static bool AddingNewEntryCheck(int reputationPoints, EntryType typeOfEntry)
         {
             var success = typeOfEntry is EntryType.Resource || reputationPoints >= 3;

@@ -114,6 +114,7 @@ namespace DomainLayer
                     e.UpvoteCount,
                     e.DownvoteCount,
                     e.CommentCount,
+                    e.TypeOfEntry,
                 })
                 .FirstOrDefault();
 
@@ -129,6 +130,7 @@ namespace DomainLayer
                 UpvoteCount = entrySpecificDetails.UpvoteCount,
                 DownvoteCount = entrySpecificDetails.DownvoteCount,
                 CommentCount = entrySpecificDetails.CommentCount,
+                TypeOfEntry = entrySpecificDetails.TypeOfEntry,
             };
 
             return entryDetails;
@@ -142,33 +144,6 @@ namespace DomainLayer
             chosenEntry.Content = content + $" (uredio {DateTime.Now} korisnik {loggedInUser.UserName})";
 
             context.SaveChanges();
-        }
-
-        public List<EntryDetails> GetPopularEntries(User loggedInUser)
-        {
-            List<EntryDetails> entryDetails = new();
-            context.Entries
-                    .OrderByDescending(e => e.CommentCount)
-                    .Where(e => e.PublishedAt.Date == DateTime.Now.Date)
-                    .Where(e => e.TypeOfEntry == EntryType.Resource)
-                    .Join(context.Users, e => e.AuthorId, u => u.Id, (entry, user) => new
-                    {
-                        Entry = entry,
-                        User = user
-                    })
-                    .Take(5)
-                    .ToList()
-                    .ForEach(eu => {
-                    if (!context.UserEntries
-                        .Where(ue => ue.UserId == loggedInUser.Id
-                        && ue.EntryId == eu.Entry.Id)
-                        .Any())
-                        {
-                            AddNewUserEntry(eu.Entry, loggedInUser);
-                        }
-                        entryDetails.Add(GetEntryDetails(eu.Entry.Id, eu.User.Id));
-                    });
-            return entryDetails;
         }
 
         public List<Entry> GetAvailableUnansweredEntries(EntryDepartmentChoice departmentChoice)
@@ -210,6 +185,30 @@ namespace DomainLayer
             return context.Entries
                 .Where(e => e.ParentId == parentId)
                 .ToList();
+        }
+
+        public List<Entry> GetPopularEntries(EntryType entryType)
+        {
+            var availableResources = context.Entries
+                .Where(e => e.TypeOfEntry == EntryType.Resource)
+                .Where(e => e.PublishedAt.Date == DateTime.Now.Date)
+                .ToList()
+                .OrderByDescending(e => e.CommentCount)
+                .ToList();
+
+            var idsOfAvailableResources = availableResources.Select(e => e.Id);
+
+            var availableComments = context.Entries
+                .Where(e => idsOfAvailableResources.Contains(e.ParentId))
+                .ToList();
+
+            if (entryType is EntryType.Answer)
+            {
+                return availableComments;
+            }
+
+            availableResources.AddRange(availableComments);
+            return availableResources.Take(5).ToList();
         }
     }
 }

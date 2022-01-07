@@ -82,7 +82,7 @@ namespace PresentationLayer
                 "4 - Odgovori na resurs / Komentiraj odgovor\n" +
                 "5 - Uređivanje, " +
                 "6 - Brisanje, ");
-            if (listResourcesType is ListResourcesType.Regular)
+            if (listResourcesType is not ListResourcesType.Unanswered)
             {
                 Console.Write("7 - Pregled komentara odgovora, ");
             }
