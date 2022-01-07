@@ -183,10 +183,7 @@ namespace PresentationLayer
             Console.Clear();
             while (true)
             {
-                if (!EntryService.ResourceActionsMenuHeader(loggedInUser, departmentChoice, listResourcesType))
-                {
-                    return;
-                }
+                EntryService.ResourceActionsMenuHeader(loggedInUser, departmentChoice, listResourcesType);
 
                 var choice = (EntryActionChoice)MenuOutputPrinter.EntryActionsMenuOutput(listResourcesType);
                 var chosenEntry = EntryService.GetAccessibleEntryForResourceActionsMenu(choice, departmentChoice, listResourcesType);

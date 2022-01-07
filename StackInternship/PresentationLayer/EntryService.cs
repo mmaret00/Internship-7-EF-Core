@@ -14,14 +14,14 @@ namespace PresentationLayer
 {
     public class EntryService
     {
-        public static bool ResourceActionsMenuHeader(User loggedInUser, EntryDepartmentChoice departmentChoice, ListResourcesType listResourcesType)
+        public static void ResourceActionsMenuHeader(User loggedInUser, EntryDepartmentChoice departmentChoice, ListResourcesType listResourcesType)
         {
             EntryRepository er = new();
             var entryDetails = er.GetEntryDetailsList(departmentChoice, loggedInUser, EntryType.Resource, 0);
             if (entryDetails is null)
             {
                 StringHelper.OutputPainter($"Željena kategorija je prazna!", ConsoleColor.Red, ConsoleColor.Black);
-                return false;
+                return;
             }
             foreach (var entryDetail in entryDetails)
             {
@@ -31,7 +31,6 @@ namespace PresentationLayer
                 GetAnswers(loggedInUser, departmentChoice, entryDetail);
                 Console.WriteLine("\n======================================================================================\n\n");
             }
-            return true;
         }
 
         public static void AnswerActionsMenuHeader(User loggedInUser, Entry answer)
