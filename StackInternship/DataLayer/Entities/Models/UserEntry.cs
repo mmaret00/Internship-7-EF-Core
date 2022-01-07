@@ -14,14 +14,12 @@ namespace DataLayer.Entities.Models
         public Entry Entry { get; set; }
         public int EntryId { get; set; }
 
-        public bool Viewed { get; set; }
         public bool Voted { get; set; }
 
         public UserEntry(int userId, int entryId)
         {
             UserId = userId;
             EntryId = entryId;
-            Viewed = true;
         }
     }
 }
